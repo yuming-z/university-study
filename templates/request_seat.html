@@ -1,0 +1,10 @@
+{% include 'top.html' %}
+<div id="content">
+    <form class="pure-form seats" method="post" action="{{url_for('find_classroom')}}">
+
+        <h2>Find Classrooms</h2>
+        <h4>Enter the number of seats you want</h4>
+        <input type="number" name="seat" placeholder="Number of seats" required>
+        <input class="pure-button pure-button-primary" type="submit">
+    </form>
+</div>

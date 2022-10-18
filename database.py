@@ -127,6 +127,31 @@ def list_classroom():
     connection.close()
     return result
 
+# search for rooms with more than a given number of seat
+def find_classroom(seats):
+    # validate the connection
+    connection = database_connect()
+    if (connection is None):
+        return None
+    
+    if (seats < 0):
+        return None
+    
+    # set up cursor
+    cursor = connection.cursor()
+    result = None
+    try:
+        cursor.execute("SELECT * FROM unidb.Classroom WHERE seats >= %s", (seats, ))
+        result = cursor.fetchall()
+
+        connection.commit()
+    except:
+        print("Error when finding the classroom")
+    
+    cursor.close()
+    connection.close()
+    return result
+
 #####################################################
 #  Python code if you run it on it's own as 2tier
 #####################################################

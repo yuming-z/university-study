@@ -1,7 +1,8 @@
 # Importing the Flask Framework
 
+from crypt import methods
 from modules import *
-from flask import *
+from modules.flask import *
 import database
 import configparser
 
@@ -99,6 +100,24 @@ def list_classroom():
     page['title'] = "Classroom"
     return render_template('classrooms.html', page=page, session=session, classrooms=classrooms)
 
+# Find the classrooms with more than a given seat
+@app.route('/find-classroom', methods=['POST', "GET"])
+def find_classroom():
+    page['title'] = "Find Classrooms"
+
+    if (request.method == 'POST'):
+        # get the eligible classrooms
+        result = database.find_classroom(request.form['seat'])
+
+        if (result is None):
+            flash("There was an error finding the eligible classrooms")
+            result = []
+    
+    else:
+        return render_template('request_seat.html', page=page, session=session)
+        
+    
+        
 
 ################################################################################
 # List Units page
