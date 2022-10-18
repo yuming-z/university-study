@@ -161,13 +161,10 @@ def search_lectures_by_time():
         valid_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
         
         time_string = request.form["classtime"]
-#         day = time_string[:3]
-#         hour = time_string[3:]
-#         if len(time_string) != 5 or day not in valid_days or not hour.isdigit() or (hour.isdigit() and (int(hour) < 0 or int(hour) > 23)):
-#             flash('Error, please enter a valid class day and time')
-#         ^^^^^ removed because sanitising inputs not necessary ^^^^^^
-
-
+        day = time_string[:3]
+        hour = time_string[3:]
+        if len(time_string) != 5 or day not in valid_days or not hour.isdigit() or (hour.isdigit() and (int(hour) < 0 or int(hour) > 23)):
+            flash('Error, please enter a valid class day and time')
         
         lectures = database.search_lecs_by_time(time_string)
     
