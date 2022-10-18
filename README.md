@@ -59,7 +59,7 @@ ssh abcd1234@ucpu0.ug.cs.usyd.edu.au # Replace abcd1234 with your own Unikey
 
 At the prompt for password, give your Unikey password.
 
-Git Clone this repository to the server using `git clone`.
+Git Clone this repository **on the server** using `git clone`.
 
 ## Install the required packages
 
