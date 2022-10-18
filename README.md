@@ -58,7 +58,8 @@ ssh abcd1234@ucpu0.ug.cs.usyd.edu.au # Replace abcd1234 with your own Unikey
 ```
 
 At the prompt for password, give your Unikey password.
-Upload the project folder to the server.
+
+Git Clone this repository to the server using `git clone`.
 
 ## Install the required packages
 
@@ -66,7 +67,7 @@ You need some Python packages to be installed so that you can run the applicatio
 To install these packages, in the terminal, run the following code:
 
 ```bash
-bash package-install.sh
+bash install.sh
 ```
 
 ## Set up the initialisation file
