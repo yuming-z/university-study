@@ -157,30 +157,22 @@ def list_lectures():
 def search_lectures_by_time():
     
     if(request.method == 'POST'):
- 
-        valid_days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
-        
+  
         time_string = request.form["classtime"]
-        day = time_string[:3]
-        hour = time_string[3:]
-        if len(time_string) != 5 or day not in valid_days or not hour.isdigit() or (hour.isdigit() and (int(hour) < 0 or int(hour) > 23)):
-            flash('Error, please enter a valid class day and time')
-        
+ 
         lectures = database.search_lecs_by_time(time_string)
     
-        # What happens if lectures are null?
-        if (lectures is None):
-            # Set it to an empty list and show error message
-            lectures = []
-            flash('Error, there are no lectures matching that time')
-
-        page['title'] = 'Lecture Search Result'
-        return render_template('lecturesearchresult.html', page=page, session=session, lectures=lectures)
-                                                                                    
+        if (lectures == ()):
+            flash('Error, there are no lectures with class times matching the input. Please try again')
+            return render_template('lecturesbytime.html', page=page, session=session)
+    
+        else:
+            page['title'] = 'Lecture Search Result'
+            return render_template('lecturesearchresult.html', page=page, session=session, lectures=lectures)
+                                                                                     
     else:
         page['title'] = 'Search Lectures By Time'
         return render_template('lecturesbytime.html', page=page, session=session)
-
 
     
 ################################################################################
