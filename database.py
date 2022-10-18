@@ -63,7 +63,7 @@ def check_login(sid, pwd):
     try:
         # Try executing the SQL and get from the database
         sql = """SELECT *
-                 FROM unidb.student
+                 FROM y22s2i2120_pjaf4595.UniDB.student
                  WHERE studid=%s AND password=%s"""
         cur.execute(sql, (sid, pwd))
         r = cur.fetchone()              # Fetch the first row
@@ -97,7 +97,7 @@ def list_units():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uosCode, uosName, credits, year, semester
-                        FROM UniDB.UoSOffering JOIN UniDB.UnitOfStudy USING (uosCode)
+                        FROM y22s2i2120_pjaf4595.UniDB.UoSOffering JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy USING (uosCode)
                         ORDER BY uosCode, year, semester""")
         val = cur.fetchall()
     except:
@@ -108,24 +108,143 @@ def list_units():
     conn.close()                    # Close the connection to the db
     return val
 
-# List all the classrooms
-def list_classroom():
-    # Validate the connection
-    connection = database_connect()
-    if (connection is None):
+
+################################################################################
+# Get transcript function
+#   - Your turn now!
+#   - What do you have to do?
+#       1. Connect to the database and set up the cursor.
+#       2. You're given an SID - get the transcript for the SID.
+#       3. Close the cursor and the connection.
+#       4. Return the information we need.
+################################################################################
+
+def get_transcript(sid):
+    # TODO
+    # Get the students transcript from the database
+    # You're given an SID as a variable 'sid'
+    # Return the results of your query :)
+    
+    
+    conn = database_connect()
+    if(conn is None):
         return None
     
-    # set up cursor
-    cursor = connection.cursor()
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
     try:
-        cursor.execute("""SELECT * FROM unidb.Classroom;""")
-        result = cursor.fetchall()
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT uosCode, uosName, credits, year, semester, grade
+                        FROM y22s2i2120_pjaf4595.UniDB.Transcript NATURAL JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy
+                        WHERE studId = %s;""", (sid, ))
+        val = cur.fetchall()
+        # print(val)  ---- FOR TROUBLESHOOTING
     except:
-        print("Error when getting the classroom")
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
 
-    cursor.close()
-    connection.close()
-    return result
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+
+
+################################################################################
+# Lecture Table Functions
+################################################################################
+
+def list_lectures():
+    # Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        return None
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
+    try:
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT uoscode, uosname, semester, year, classtime, classroomid 
+                        FROM y22s2i2120_pjaf4595.UniDB.Lecture JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy USING (uosCode)
+                        ORDER By year, semester, classroomid;""")
+        val = cur.fetchall()
+    except:
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+    
+
+def search_lecs_by_time(classtime):
+    conn = database_connect()
+    if(conn is None):
+        return None
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
+    try:
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT uoscode, semester, year, classroomid, classtime
+                        FROM y22s2i2120_pjaf4595.UniDB.Lecture 
+                        WHERE classtime = %s
+                        ORDER By year, semester, classroomid;""", (classtime,))
+        val = cur.fetchall()
+    except:
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+    
+
+def get_lecture_report():
+    
+    # Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        return None
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
+    try:
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT classroomid, count(classtime) 
+                        FROM y22s2i2120_pjaf4595.UniDB.Lecture 
+                        GROUP BY classroomid
+                        ORDER BY classroomid;""")
+        val = cur.fetchall()
+    except:
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+
+
+def add_lecture_to_db(uoscode, semester, year, classtime, classroomid):
+    conn = database_connect()
+    if(conn is None):
+        return None
+    
+    cur = conn.cursor()
+    try:
+        cur.execute("""INSERT INTO y22s2i2120_pjaf4595.UniDB.Lecture(uoscode, semester, year, classtime, classroomid) 
+                        VALUES(%s, %s, %s, %s, %s);""", (uoscode, semester, year, classtime, classroomid))
+        conn.commit()
+    except Exception as e:
+        print("Error inserting into database")
+        conn.rollback()
+        
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return
 
 #####################################################
 #  Python code if you run it on it's own as 2tier

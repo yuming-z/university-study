@@ -14,7 +14,18 @@
             {% if session.logged_in %}
             <ul class="pure-menu-list">
                 <li class="pure-menu-item"><a href="{{ url_for('list_units') }}" class="pure-menu-link">All Units</a></li>
-                <li class="pure-menu-item"><a href="{{ url_for('list_classroom') }}" class="pure-menu-link">All Classrooms</a></li>
+                <li class="pure-menu-item"><a href="{{ url_for('transcript') }}" class="pure-menu-link">Transcript</a></li>
+                <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                    <!-- PAUL DROPDOWN MENU STUFF BELOW -->
+                    <a href="#" class="pure-menu-link">Lectures</a>
+                    <ul class="pure-menu-children">
+                        <li class="pure-menu-item"><a href="{{ url_for('list_lectures') }}" class="pure-menu-link">All Lectures</a></li>
+                        <li class="pure-menu-item"><a href="{{ url_for('search_lectures_by_time') }}" class="pure-menu-link">Search Lectures By Time</a></li>
+                        <li class="pure-menu-item"><a href="{{ url_for('lecture_report') }}" class="pure-menu-link">Lecture Report</a></li>
+                        <li class="pure-menu-item"><a href="{{ url_for('add_lecture') }}" class="pure-menu-link">Add Lecture</a></li>
+                    </ul>
+                    <!-- PAUL DROPDOWN MENU STUFF ABOVE -->
+                </li>
                 <li class="pure-menu-item"><a href="{{ url_for('logout')}}" class="pure-menu-link">Logout</a></li>
             </ul>
             {% endif %}
