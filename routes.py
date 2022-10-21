@@ -85,19 +85,97 @@ def logout():
     flash('You have been logged out')
     return redirect(url_for('index'))
 
-# List the classrooms
-@app.route('/list-classroom')
-def list_classroom():
-    # Go into the database file and get the list_classroom() function
-    classrooms = database.list_classroom()
 
-    # Error checking
-    if (classrooms is None):
-        classrooms = []
-        flash("Error! There is no classroom stored")
+################################################################################
+# Transcript Page
+################################################################################
+
+@app.route('/transcript')
+def transcript():
+    # TODO
+    # Now it's your turn to add to this ;)
+    # Good luck!
+    #   Look at the function below
+    #   Look at database.py
+    #   Look at units.html and transcript.html
+    grades = database.get_transcript(session['sid'])
     
-    page['title'] = "Classroom"
-    return render_template('classrooms.html', page=page, session=session, classrooms=classrooms)
+    if (grades is None):
+        grades = []
+        flash('Error, there are no grades')
+    page['title'] = 'Transcript'
+    return render_template('transcript.html', page=page, session=session, grades = grades)
+
+
+################################################################################
+# Prerequisites Page
+################################################################################
+
+@app.route('/prerequisites')
+def prerequisites():
+    prereq = database.get_prerequisites()
+    
+    if (prereq is None):
+        prereq = []
+        flash('Error, there are no prerequisites')
+    page['title'] = 'Prerequisites'
+    return render_template('prerequisites.html', page=page, session=session, prereq = prereq)
+
+@app.route('/prerequisites-by-unit', methods=['POST', 'GET'])
+def prerequisites_by_unit():
+    
+    if (request.method == 'POST'):
+        unit_string = request.form["unit"]
+        
+        prereq_bu = database.get_prerequisites_for_unit(unit_string)
+    
+        if (prereq_bu is None):
+            prereq_bu = []
+            flash('Error, there are no prerequisites')
+            return render_template('prereqbyunitsearch.html', page=page, session=session)
+        else:
+            page['title'] = 'Prerequisites by unit'
+            return render_template('prereqbyunitresults.html', page=page, session=session, prereq_bu = prereq_bu)
+    else:
+            page['title'] = 'Prerequisites by unit'
+            return render_template('prereqbyunitsearch.html', page=page, session=session)
+        
+@app.route('/add-prerequisite', methods=['POST', 'GET'])
+def add_prerequisite():
+    
+    if(request.method == 'POST'):
+        
+        uoscode = request.form["uoscode"]
+        prerequoscode = request.form["prerequoscode"]
+        enforcedsince = request.form["enforcedsince"]
+        
+        attributes = [uoscode, prerequoscode, enforcedsince]
+        
+        try:
+            database.add_prereq_to_db(uoscode, prerequoscode, enforcedsince)
+            page['title'] = 'Prerequisite Successfully Added'
+            return render_template('addprereqsuccess.html', page=page, session=session, attributes=attributes)
+
+        except:
+            flash('Error, constraints violated or invalid attribute parameters')
+            page['title'] = 'Add Prerequisite Unsuccessful'
+            return render_template('addprereqfailure.html', page=page, session=session, attributes=attributes)
+                                                                                          
+    else:
+        page['title'] = 'Add Prerequisite'
+        return render_template('addprereq.html', page=page, session=session)
+    
+
+@app.route('/count-prerequisites')
+def count_prerequisites():
+    count_prereq = database.count_prerequisites()
+    
+    if (count_prereq is None):
+        count_prereq = []
+        flash('Error, there are no units')
+    page['title'] = 'Count Prerequisites'
+    return render_template('countprereq.html', page=page, session=session, count_prereq = count_prereq)
+
 
 
 ################################################################################

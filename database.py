@@ -108,24 +108,156 @@ def list_units():
     conn.close()                    # Close the connection to the db
     return val
 
-# List all the classrooms
-def list_classroom():
-    # Validate the connection
-    connection = database_connect()
-    if (connection is None):
+
+################################################################################
+# Get transcript function
+#   - Your turn now!
+#   - What do you have to do?
+#       1. Connect to the database and set up the cursor.
+#       2. You're given an SID - get the transcript for the SID.
+#       3. Close the cursor and the connection.
+#       4. Return the information we need.
+################################################################################
+
+def get_transcript(sid):
+    # TODO
+    # Get the students transcript from the database
+    # You're given an SID as a variable 'sid'
+    # Return the results of your query :)
+    #return None
+# Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        return None
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
+    try:
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT uosCode, uosName, credits, year, semester, grade
+                        FROM UniDB.Transcript NATURAL JOIN UniDB.UnitofStudy
+                        WHERE studID = %s;
+                    """,(sid, ))
+        val = cur.fetchall()
+    except:
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+
+
+
+################################################################################
+# Get prerequisites function
+################################################################################
+
+def get_prerequisites():
+    # TODO
+    # Get the students transcript from the database
+    # You're given an SID as a variable 'sid'
+    # Return the results of your query :)
+    #return None
+# Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        return None
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
+    try:
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT r.uoscode, u1.uosname, r.prerequoscode, u2.uosname, enforcedsince
+                       FROM UniDB.Requires r LEFT JOIN UniDB.UnitOfStudy u1 on (r.uoscode = u1.uoSCode) LEFT JOIN UniDB.UnitOfStudy u2 on (r.prerequoscode = u2.uoSCode);
+                    """)
+        val = cur.fetchall()
+    except:
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+
+def get_prerequisites_for_unit(uoscode):
+    # TODO
+    # Get the students transcript from the database
+    # You're given an SID as a variable 'sid'
+    # Return the results of your query :)
+    #return None
+# Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        return None
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
+    try:
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT r.prerequoscode, u.uosname
+                       FROM UniDB.requires r left join UniDB.unitofstudy u on (r.prerequoscode = u.uoSCode)
+                       WHERE r.uoscode = %s;
+                    """,(uoscode, ))
+        val = cur.fetchall()
+    except:
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+
+def add_prereq_to_db(uoscode, prerequoscode, enforcedsince):
+    conn = database_connect()
+    if(conn is None):
         return None
     
-    # set up cursor
-    cursor = connection.cursor()
+    cur = conn.cursor()
     try:
-        cursor.execute("""SELECT * FROM unidb.Classroom;""")
-        result = cursor.fetchall()
-    except:
-        print("Error when getting the classroom")
+        cur.execute("""INSERT INTO UniDB.requires(uoscode, prerequoscode, enforcedsince) 
+                        VALUES(%s, %s, %s);""", (uoscode, prerequoscode, enforcedsince))
+        conn.commit()
+    except Exception as e:
+        print("Error inserting into database")
+        conn.rollback()
+        
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return
 
-    cursor.close()
-    connection.close()
-    return result
+
+def count_prerequisites():
+    # TODO
+    # Get the students transcript from the database
+    # You're given an SID as a variable 'sid'
+    # Return the results of your query :)
+    #return None
+# Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        return None
+    # Sets up the rows as a dictionary
+    cur = conn.cursor()
+    val = None
+    try:
+        # Try getting all the information returned from the query
+        # NOTE: column ordering is IMPORTANT
+        cur.execute("""SELECT u.uoSCode, COUNT(R.prereqUoSCode)
+                       FROM UniDB.UnitofStudy u LEFT JOIN UniDB.requires r on (r.uoscode = u.uoSCode)
+                       GROUP BY u.uoSCode;
+                    """)
+        val = cur.fetchall()
+    except:
+        # If there were any errors, we print something nice and return a NULL value
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
 
 #####################################################
 #  Python code if you run it on it's own as 2tier

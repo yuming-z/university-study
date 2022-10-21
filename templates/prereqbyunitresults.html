@@ -1,0 +1,21 @@
+{% include 'top.html' %}
+<div id="content">
+    <div id="container">
+        <h1 class="page-title">Prerequisite units</h1>
+        <table class="pure-table">
+            <thead>
+                <tr><th>UOS Code</th><th>UOS Name</th></tr>
+            </thead>
+            <tbody>
+                {% for prereq in prereq_bu %}
+                    <tr>
+						<td> {{prereq[0]}} </td>
+                        <td> {{prereq[1]}} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
