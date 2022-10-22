@@ -115,8 +115,7 @@ def transcript():
 def prerequisites():
     prereq = database.get_prerequisites()
     
-    if (prereq is None):
-        prereq = []
+    if (prereq == ()):
         flash('Error, there are no prerequisites')
     page['title'] = 'Prerequisites'
     return render_template('prerequisites.html', page=page, session=session, prereq = prereq)
@@ -129,8 +128,7 @@ def prerequisites_by_unit():
         
         prereq_bu = database.get_prerequisites_for_unit(unit_string)
     
-        if (prereq_bu is None):
-            prereq_bu = []
+        if (prereq_bu == ()):
             flash('Error, there are no prerequisites')
             return render_template('prereqbyunitsearch.html', page=page, session=session)
         else:
@@ -170,8 +168,7 @@ def add_prerequisite():
 def count_prerequisites():
     count_prereq = database.count_prerequisites()
     
-    if (count_prereq is None):
-        count_prereq = []
+    if (count_prereq == ()):
         flash('Error, there are no units')
     page['title'] = 'Count Prerequisites'
     return render_template('countprereq.html', page=page, session=session, count_prereq = count_prereq)

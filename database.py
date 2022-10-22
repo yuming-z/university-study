@@ -21,7 +21,6 @@ def database_connect():
         '''
         This is doing a couple of things in the back
         what it is doing is:
-
         connect(database='y12i2120_unikey',
             host='soit-db-pro-2.ucc.usyd.edu.au,
             password='password_from_config',
@@ -269,9 +268,7 @@ if (__name__ == '__main__'):
     print("""
 This file is to interact directly with the database.
 We're using the unidb (make sure it's in your database)
-
 Try to execute some functions:
 check_login('3070799133', 'random_password')
 check_login('3070088592', 'Green')
 list_units()""")
-
