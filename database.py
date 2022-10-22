@@ -63,7 +63,7 @@ def check_login(sid, pwd):
     try:
         # Try executing the SQL and get from the database
         sql = """SELECT *
-                 FROM unidb.student
+                 FROM y22s2i2120_pjaf4595.unidb.student
                  WHERE studid=%s AND password=%s"""
         cur.execute(sql, (sid, pwd))
         r = cur.fetchone()              # Fetch the first row
@@ -97,7 +97,7 @@ def list_units():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uosCode, uosName, credits, year, semester
-                        FROM UniDB.UoSOffering JOIN UniDB.UnitOfStudy USING (uosCode)
+                        FROM y22s2i2120_pjaf4595.UniDB.UoSOffering JOIN UniDB.UnitOfStudy USING (uosCode)
                         ORDER BY uosCode, year, semester""")
         val = cur.fetchall()
     except:
@@ -136,7 +136,7 @@ def get_transcript(sid):
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uosCode, uosName, credits, year, semester, grade
-                        FROM UniDB.Transcript NATURAL JOIN UniDB.UnitofStudy
+                        FROM y22s2i2120_pjaf4595.UniDB.Transcript NATURAL JOIN y22s2i2120_pjaf4595.UniDB.UnitofStudy
                         WHERE studID = %s;
                     """,(sid, ))
         val = cur.fetchall()
@@ -171,7 +171,7 @@ def get_prerequisites():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT r.uoscode, u1.uosname, r.prerequoscode, u2.uosname, enforcedsince
-                       FROM UniDB.Requires r LEFT JOIN UniDB.UnitOfStudy u1 on (r.uoscode = u1.uoSCode) LEFT JOIN UniDB.UnitOfStudy u2 on (r.prerequoscode = u2.uoSCode);
+                       FROM y22s2i2120_pjaf4595.UniDB.Requires r LEFT JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy u1 on (r.uoscode = u1.uoSCode) LEFT JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy u2 on (r.prerequoscode = u2.uoSCode);
                     """)
         val = cur.fetchall()
     except:
@@ -199,7 +199,7 @@ def get_prerequisites_for_unit(uoscode):
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT r.prerequoscode, u.uosname
-                       FROM UniDB.requires r left join UniDB.unitofstudy u on (r.prerequoscode = u.uoSCode)
+                       FROM y22s2i2120_pjaf4595.UniDB.requires r left join y22s2i2120_pjaf4595.UniDB.unitofstudy u on (r.prerequoscode = u.uoSCode)
                        WHERE r.uoscode = %s;
                     """,(uoscode, ))
         val = cur.fetchall()
@@ -218,7 +218,7 @@ def add_prereq_to_db(uoscode, prerequoscode, enforcedsince):
     
     cur = conn.cursor()
     try:
-        cur.execute("""INSERT INTO UniDB.requires(uoscode, prerequoscode, enforcedsince) 
+        cur.execute("""INSERT INTO y22s2i2120_pjaf4595.UniDB.requires(uoscode, prerequoscode, enforcedsince) 
                         VALUES(%s, %s, %s);""", (uoscode, prerequoscode, enforcedsince))
         conn.commit()
     except Exception as e:
@@ -247,7 +247,7 @@ def count_prerequisites():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT u.uoSCode, COUNT(R.prereqUoSCode)
-                       FROM UniDB.UnitofStudy u LEFT JOIN UniDB.requires r on (r.uoscode = u.uoSCode)
+                       FROM y22s2i2120_pjaf4595.UniDB.UnitofStudy u LEFT JOIN y22s2i2120_pjaf4595.UniDB.requires r on (r.uoscode = u.uoSCode)
                        GROUP BY u.uoSCode;
                     """)
         val = cur.fetchall()
