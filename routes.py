@@ -224,3 +224,22 @@ def add_lecture():
     else:
         page['title'] = 'Add Lecture'
         return render_template('addlecture.html', page=page, session=session)
+
+
+################################################################################
+# Display Assignments for Enrolled Units page
+################################################################################
+
+@app.route('/display-student-assignments')
+def display_student_assignments():
+
+    assts = database.get_assignments(session['sid'])
+
+    if (assts is None):
+
+        assts = []
+        flash("Error, there are no assignments for this student's enrolled units")
+    page['title'] = 'Student Assignments'
+    return render_template('displayassignments.html', page=page, session=session, assts=assts)
+
+    

@@ -248,6 +248,34 @@ def add_lecture_to_db(uoscode, semester, year, classtime, classroomid):
     conn.close()                    # Close the connection to the db
     return 0
 
+
+
+################################################################################
+# Get Assignments Function
+################################################################################
+
+def get_assignments(sid):
+    
+    conn = database_connect()
+    if(conn is None):
+        return None
+    
+    cur = conn.cursor()
+    val = None
+    try:
+        cur.execute("""SELECT T.uosCode, uosName, name, weighting, type, duedate
+                        FROM UniDB.Transcript T NATURAL JOIN UniDB.Assignment NATURAL JOIN UniDB.UnitOfStudy
+                        WHERE studId = %s
+                        ORDER BY T.uosCode, name;""", (sid, ))
+        val = cur.fetchall()
+
+    except:
+        print("Error fetching from database")
+
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
+    return val
+
 #####################################################
 #  Python code if you run it on it's own as 2tier
 #####################################################
