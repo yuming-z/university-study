@@ -1,0 +1,22 @@
+{% include 'top.html' %}
+<div id="content">
+    <h1 class="page-title">{{ session.name }}'s Assignments</h1>
+    <table class="pure-table">
+        <thead>
+            <tr><th>UOS Code</th><th>UOS Name</th><th>Assignment Name</th><th>Weighting</th><th>Type</th><th>Due Date</th></tr>
+        </thead>
+        <tbody>
+ 
+            {% for asst in assts %}
+                    <tr>
+						<td> {{asst[0]}} </td>
+                        <td> {{asst[1]}} </td>
+                        <td> {{asst[2]}} </td>
+                        <td> {{asst[3]}} </td>
+                        <td> {{asst[4]}} </td>
+                        <td> {{asst[5]}} </td>
+                    </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
