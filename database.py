@@ -240,10 +240,13 @@ def add_lecture_to_db(uoscode, semester, year, classtime, classroomid):
     except Exception as e:
         print("Error inserting into database")
         conn.rollback()
+        cur.close()                     # Close the cursor
+        conn.close()
+        return 1  
         
     cur.close()                     # Close the cursor
     conn.close()                    # Close the connection to the db
-    return
+    return 0
 
 #####################################################
 #  Python code if you run it on it's own as 2tier

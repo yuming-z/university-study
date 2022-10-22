@@ -210,12 +210,13 @@ def add_lecture():
         
         attributes = [uoscode, semester, year, classtime, classroomid]
         
-        try:
-            database.add_lecture_to_db(uoscode, semester, year, classtime, classroomid)
+        condition = database.add_lecture_to_db(uoscode, semester, year, classtime, classroomid)
+        
+        if(condition == 0):
             page['title'] = 'Lecture Successfully Added'
             return render_template('addlecturesuccess.html', page=page, session=session, attributes=attributes)
 
-        except:
+        else:
             flash('Error, constraints violated or invalid attribute parameters')
             page['title'] = 'Add Lecture Unsuccessful'
             return render_template('addlecturefailure.html', page=page, session=session, attributes=attributes)
