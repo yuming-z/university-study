@@ -134,6 +134,30 @@ def count_classroom():
     
     return render_template('count_classrooms.html', page=page, session=session, counts=result)
 
+# Insert a new classroom
+@app.route('/insert_classroom', methods=['POST', 'GET'])
+def insert_classroom():
+    page['title'] = "Add A New Classroom"
+
+    if (request.method == 'POST'):
+        # get the details for inserting a new classroom
+        id = request.form['classroomid']
+        seat = request.form.get('seat', type=int)
+        type = request.form['type']
+
+        # perform SQL action
+        status = database.insert_classroom(id, seat, type)
+
+        if (status is False):
+            flash("There is an error inserting the new classroom")
+            return redirect(url_for('insert_classroom'))
+        else:
+            flash("New classroom successfully inserted")
+            return redirect(url_for('index'))
+    
+    else:
+        return render_template('insert_classroom.html', page=page, session=session)
+
 ################################################################################
 # List Units page
 ################################################################################

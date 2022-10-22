@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from multiprocessing import connection
+
+from numpy import False_
 from modules import pg8000
 import configparser
 
@@ -134,6 +137,8 @@ def find_classroom(seats):
     if (connection is None):
         return None
     
+    if (seats is None):
+        return None
     if (seats < 0):
         return None
     
@@ -142,11 +147,12 @@ def find_classroom(seats):
     result = None
     try:
         cursor.execute("SELECT * FROM unidb.Classroom WHERE seats >= %s", (seats, ))
-        result = cursor.fetchall()
-
         connection.commit()
+
+        result = cursor.fetchall()
     except:
         print("Error when finding the classroom")
+        connection.rollback()
     
     cursor.close()
     connection.close()
@@ -168,16 +174,49 @@ def count_classroom():
         FROM unidb.classroom
         GROUP BY type;
         """)
+        connection.commit()
 
         result = cursor.fetchall()
-
-        connection.commit()
     except:
         print("Error when counting the classrooms")
+        connection.rollback()
     
     cursor.close()
     connection.close()
     return result
+
+# add new classroom to the dataset
+def insert_classroom(id, seats, type):
+    # validate the database connection
+    connection = database_connect()
+    if (connection is None):
+        return False
+    
+    # validate seat input
+    if (seats < 0):
+        return False
+    
+    # Create cursor
+    cursor = connection.cursor()
+    try:
+        cursor.execute("""
+        INSERT INTO unidb.classroom(classroomid, seats, type)
+        VALUES (%s, %s, %s)
+        """, (id, seats, type))
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+        return True
+    except:
+        print("Error when inserting the data")
+        connection.rollback()
+
+        cursor.close()
+        connection.close()
+        return False
+        
 
 #####################################################
 #  Python code if you run it on it's own as 2tier
