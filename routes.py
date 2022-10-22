@@ -158,7 +158,7 @@ def add_prerequisite():
         else:
             flash('Error, constraints violated or invalid attribute parameters')
             page['title'] = 'Add Prerequisite Unsuccessful'
-            return render_template('addprereqfailure.html', page=page, session=session, attributes=attributes)
+            return render_template('addprereqfail.html', page=page, session=session, attributes=attributes)
                                                                                           
     else:
         page['title'] = 'Add Prerequisite'
