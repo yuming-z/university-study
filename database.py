@@ -21,12 +21,13 @@ def database_connect():
         '''
         This is doing a couple of things in the back
         what it is doing is:
+
         connect(database='y12i2120_unikey',
             host='soit-db-pro-2.ucc.usyd.edu.au,
             password='password_from_config',
             user='y19i2120_unikey')
         '''
-        connection = pg8000.connect(database=config['DATABASE']['user'],
+        connection = pg8000.connect(database=config['DATABASE']['database'],
                                     user=config['DATABASE']['user'],
                                     password=config['DATABASE']['password'],
                                     host=config['DATABASE']['host'])
@@ -62,7 +63,7 @@ def check_login(sid, pwd):
     try:
         # Try executing the SQL and get from the database
         sql = """SELECT *
-                 FROM y22s2i2120_pjaf4595.unidb.student
+                 FROM unidb.student
                  WHERE studid=%s AND password=%s"""
         cur.execute(sql, (sid, pwd))
         r = cur.fetchone()              # Fetch the first row
@@ -96,7 +97,7 @@ def list_units():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uosCode, uosName, credits, year, semester
-                        FROM y22s2i2120_pjaf4595.UniDB.UoSOffering JOIN UniDB.UnitOfStudy USING (uosCode)
+                        FROM UniDB.UoSOffering JOIN UniDB.UnitOfStudy USING (uosCode)
                         ORDER BY uosCode, year, semester""")
         val = cur.fetchall()
     except:
@@ -135,7 +136,7 @@ def get_transcript(sid):
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uosCode, uosName, credits, year, semester, grade
-                        FROM y22s2i2120_pjaf4595.UniDB.Transcript NATURAL JOIN y22s2i2120_pjaf4595.UniDB.UnitofStudy
+                        FROM UniDB.Transcript NATURAL JOIN UniDB.UnitofStudy
                         WHERE studID = %s;
                     """,(sid, ))
         val = cur.fetchall()
@@ -170,7 +171,7 @@ def get_prerequisites():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT r.uoscode, u1.uosname, r.prerequoscode, u2.uosname, enforcedsince
-                       FROM y22s2i2120_pjaf4595.UniDB.Requires r LEFT JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy u1 on (r.uoscode = u1.uoSCode) LEFT JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy u2 on (r.prerequoscode = u2.uoSCode);
+                       FROM UniDB.Requires r LEFT JOIN UniDB.UnitOfStudy u1 on (r.uoscode = u1.uoSCode) LEFT JOIN UniDB.UnitOfStudy u2 on (r.prerequoscode = u2.uoSCode);
                     """)
         val = cur.fetchall()
     except:
@@ -198,7 +199,7 @@ def get_prerequisites_for_unit(uoscode):
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT r.prerequoscode, u.uosname
-                       FROM y22s2i2120_pjaf4595.UniDB.requires r left join y22s2i2120_pjaf4595.UniDB.unitofstudy u on (r.prerequoscode = u.uoSCode)
+                       FROM UniDB.requires r left join UniDB.unitofstudy u on (r.prerequoscode = u.uoSCode)
                        WHERE r.uoscode = %s;
                     """,(uoscode, ))
         val = cur.fetchall()
@@ -217,7 +218,7 @@ def add_prereq_to_db(uoscode, prerequoscode, enforcedsince):
     
     cur = conn.cursor()
     try:
-        cur.execute("""INSERT INTO y22s2i2120_pjaf4595.UniDB.requires(uoscode, prerequoscode, enforcedsince) 
+        cur.execute("""INSERT INTO UniDB.requires(uoscode, prerequoscode, enforcedsince) 
                         VALUES(%s, %s, %s);""", (uoscode, prerequoscode, enforcedsince))
         conn.commit()
     except Exception as e:
@@ -249,7 +250,7 @@ def count_prerequisites():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT u.uoSCode, COUNT(R.prereqUoSCode)
-                       FROM y22s2i2120_pjaf4595.UniDB.UnitofStudy u LEFT JOIN y22s2i2120_pjaf4595.UniDB.requires r on (r.uoscode = u.uoSCode)
+                       FROM UniDB.UnitofStudy u LEFT JOIN UniDB.requires r on (r.uoscode = u.uoSCode)
                        GROUP BY u.uoSCode;
                     """)
         val = cur.fetchall()
@@ -271,7 +272,10 @@ if (__name__ == '__main__'):
     print("""
 This file is to interact directly with the database.
 We're using the unidb (make sure it's in your database)
+
 Try to execute some functions:
 check_login('3070799133', 'random_password')
 check_login('3070088592', 'Green')
 list_units()""")
+
+
