@@ -14,10 +14,17 @@
             {% if session.logged_in %}
             <ul class="pure-menu-list">
                 <li class="pure-menu-item"><a href="{{ url_for('list_units') }}" class="pure-menu-link">All Units</a></li>
-                <li class="pure-menu-item"><a href="{{ url_for('list_classroom') }}" class="pure-menu-link">All Classrooms</a></li>
-                <li class="pure-menu-item"><a href="{{ url_for('find_classroom') }}" class="pure-menu-link">Find Classrooms</a></li>
-                <li class="pure-menu-item"><a href="{{ url_for('count_classroom') }}" class="pure-menu-link">Number of Classrooms by Type</a></li>
-                <li class="pure-menu-item"><a href="{{url_for('insert_classroom')}}" class="pure-menu-link">Add Classroom</a></li>
+
+                <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                  <a href="javascript:void(0)" class="pure-menu-link">Classrooms</a>
+                  <ul class="pure-menu-children">
+                    <li class="pure-menu-item"><a href="{{ url_for('list_classroom') }}" class="pure-menu-link">All Classrooms</a></li>
+                    <li class="pure-menu-item"><a href="{{ url_for('find_classroom') }}" class="pure-menu-link">Find Classrooms</a></li>
+                    <li class="pure-menu-item"><a href="{{ url_for('count_classroom') }}" class="pure-menu-link">Number of Classrooms by Type</a></li>
+                    <li class="pure-menu-item"><a href="{{url_for('insert_classroom')}}" class="pure-menu-link">Add Classroom</a></li>
+                  </ul>
+                </li>
+
                 <li class="pure-menu-item"><a href="{{ url_for('logout')}}" class="pure-menu-link">Logout</a></li>
             </ul>
             {% endif %}
