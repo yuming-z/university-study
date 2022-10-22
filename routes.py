@@ -112,14 +112,27 @@ def find_classroom():
         if (result is None):
             flash("There was an error finding the eligible classrooms")
             result = []
+            return render_template('request_seat.html', page=page, session=session)
         else:
             return render_template('eligible_classrooms.html', page=page, session=session, classrooms=result)
     
     else:
+        # just looking at the page
         return render_template('request_seat.html', page=page, session=session)
         
+# classrooms counted by type
+@app.route('/count_classroom')
+def count_classroom():
+    page['title'] = "Number of Classrooms by Type"
+
+    result = database.count_classroom()
+
+    # Error checking
+    if (result is None):
+        result = []
+        flash("Error! Cannot count the classrooms!")
     
-        
+    return render_template('count_classrooms.html', page=page, session=session, counts=result)
 
 ################################################################################
 # List Units page

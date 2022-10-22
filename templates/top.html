@@ -15,7 +15,8 @@
             <ul class="pure-menu-list">
                 <li class="pure-menu-item"><a href="{{ url_for('list_units') }}" class="pure-menu-link">All Units</a></li>
                 <li class="pure-menu-item"><a href="{{ url_for('list_classroom') }}" class="pure-menu-link">All Classrooms</a></li>
-                <li class="pure-menu-item"><a href="{{ url_for('find_classroom') }}" class="pure-menu-link"></a>Find Classrooms</li>
+                <li class="pure-menu-item"><a href="{{ url_for('find_classroom') }}" class="pure-menu-link">Find Classrooms</a></li>
+                <li class="pure-menu-item"><a href="{{ url_for('count_classroom') }}" class="pure-menu-link">Number of Classrooms by Type</a></li>
                 <li class="pure-menu-item"><a href="{{ url_for('logout')}}" class="pure-menu-link">Logout</a></li>
             </ul>
             {% endif %}

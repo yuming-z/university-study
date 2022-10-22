@@ -1,0 +1,22 @@
+{% include 'top.html' %}
+<div id="content">
+    <div id="container">
+        <h1 class="page-title">Number of Classrooms by Type</h1>
+        <table class="pure-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Number of Classrooms</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for count in counts %}
+                <tr>
+                    <td>{{count[0]}}</td>
+                    <td>{{count[1]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

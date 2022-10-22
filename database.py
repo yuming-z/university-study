@@ -152,6 +152,33 @@ def find_classroom(seats):
     connection.close()
     return result
 
+# Classroom counted by type
+def count_classroom():
+    # validate the connection
+    connection = database_connect()
+    if (connection is None):
+        return None
+
+    # set up cursor
+    cursor = connection.cursor()
+    result = None
+    try:
+        cursor.execute("""
+        SELECT type, COUNT(classroomid)
+        FROM unidb.classroom
+        GROUP BY type;
+        """)
+
+        result = cursor.fetchall()
+
+        connection.commit()
+    except:
+        print("Error when counting the classrooms")
+    
+    cursor.close()
+    connection.close()
+    return result
+
 #####################################################
 #  Python code if you run it on it's own as 2tier
 #####################################################
