@@ -107,11 +107,13 @@ def find_classroom():
 
     if (request.method == 'POST'):
         # get the eligible classrooms
-        result = database.find_classroom(request.form['seat'])
+        result = database.find_classroom(request.form.get('seat', type=int))
 
         if (result is None):
             flash("There was an error finding the eligible classrooms")
             result = []
+        else:
+            return render_template('eligible_classrooms.html', page=page, session=session, classrooms=result)
     
     else:
         return render_template('request_seat.html', page=page, session=session)
