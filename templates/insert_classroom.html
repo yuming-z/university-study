@@ -1,0 +1,24 @@
+{% include 'top.html' %}
+<div id="content">
+    <form class="pure-form" id="new-classroom" method="post" action="{{url_for('insert_classroom')}}">
+        <h1>Add A New Classroom</h1>
+        
+        <label>Enter the classroom ID</label>
+        <br>
+        <input type="text" name="classroomid" placeholder="Classroom ID" required>
+        <br>
+
+        <label>Enter the number of seats in the classroom</label>
+        <br>
+        <input type="number" name="seat" placeholder="Available seats" required>
+        <br>
+
+        <label>Enter the room type</label>
+        <br>
+        <input type="text" name="type" placeholder="Room type">
+        <br>
+        
+        <br>
+        <input class="pure-button pure-buttom-primary" type="submit">
+    </form>
+</div>

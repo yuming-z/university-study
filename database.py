@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+from multiprocessing import connection
+
+from numpy import False_
 from modules import pg8000
 import configparser
 
@@ -27,7 +30,7 @@ def database_connect():
             password='password_from_config',
             user='y19i2120_unikey')
         '''
-        connection = pg8000.connect(database=config['DATABASE']['user'],
+        connection = pg8000.connect(database=config['DATABASE']['database'],
                                     user=config['DATABASE']['user'],
                                     password=config['DATABASE']['password'],
                                     host=config['DATABASE']['host'])
@@ -126,6 +129,94 @@ def list_classroom():
     cursor.close()
     connection.close()
     return result
+
+# search for rooms with more than a given number of seat
+def find_classroom(seats):
+    # validate the connection
+    connection = database_connect()
+    if (connection is None):
+        return None
+    
+    if (seats is None):
+        return None
+    if (seats < 0):
+        return None
+    
+    # set up cursor
+    cursor = connection.cursor()
+    result = None
+    try:
+        cursor.execute("SELECT * FROM unidb.Classroom WHERE seats >= %s", (seats, ))
+        connection.commit()
+
+        result = cursor.fetchall()
+    except:
+        print("Error when finding the classroom")
+        connection.rollback()
+    
+    cursor.close()
+    connection.close()
+    return result
+
+# Classroom counted by type
+def count_classroom():
+    # validate the connection
+    connection = database_connect()
+    if (connection is None):
+        return None
+
+    # set up cursor
+    cursor = connection.cursor()
+    result = None
+    try:
+        cursor.execute("""
+        SELECT type, COUNT(classroomid)
+        FROM unidb.classroom
+        GROUP BY type;
+        """)
+        connection.commit()
+
+        result = cursor.fetchall()
+    except:
+        print("Error when counting the classrooms")
+        connection.rollback()
+    
+    cursor.close()
+    connection.close()
+    return result
+
+# add new classroom to the dataset
+def insert_classroom(id, seats, type):
+    # validate the database connection
+    connection = database_connect()
+    if (connection is None):
+        return False
+    
+    # validate seat input
+    if (seats < 0):
+        return False
+    
+    # Create cursor
+    cursor = connection.cursor()
+    try:
+        cursor.execute("""
+        INSERT INTO unidb.classroom(classroomid, seats, type)
+        VALUES (%s, %s, %s)
+        """, (id, seats, type))
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+        return True
+    except:
+        print("Error when inserting the data")
+        connection.rollback()
+
+        cursor.close()
+        connection.close()
+        return False
+        
 
 #####################################################
 #  Python code if you run it on it's own as 2tier

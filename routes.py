@@ -1,7 +1,8 @@
 # Importing the Flask Framework
 
+from crypt import methods
 from modules import *
-from flask import *
+from modules.flask import *
 import database
 import configparser
 
@@ -99,6 +100,63 @@ def list_classroom():
     page['title'] = "Classroom"
     return render_template('classrooms.html', page=page, session=session, classrooms=classrooms)
 
+# Find the classrooms with more than a given seat
+@app.route('/find-classroom', methods=['POST', "GET"])
+def find_classroom():
+    page['title'] = "Find Classrooms"
+
+    if (request.method == 'POST'):
+        # get the eligible classrooms
+        result = database.find_classroom(request.form.get('seat', type=int))
+
+        if (result is None):
+            flash("There was an error finding the eligible classrooms")
+            result = []
+            return render_template('request_seat.html', page=page, session=session)
+        else:
+            return render_template('eligible_classrooms.html', page=page, session=session, classrooms=result)
+    
+    else:
+        # just looking at the page
+        return render_template('request_seat.html', page=page, session=session)
+        
+# classrooms counted by type
+@app.route('/count_classroom')
+def count_classroom():
+    page['title'] = "Number of Classrooms by Type"
+
+    result = database.count_classroom()
+
+    # Error checking
+    if (result is None):
+        result = []
+        flash("Error! Cannot count the classrooms!")
+    
+    return render_template('count_classrooms.html', page=page, session=session, counts=result)
+
+# Insert a new classroom
+@app.route('/insert_classroom', methods=['POST', 'GET'])
+def insert_classroom():
+    page['title'] = "Add A New Classroom"
+
+    if (request.method == 'POST'):
+        # get the details for inserting a new classroom
+        id = request.form['classroomid']
+        seat = request.form.get('seat', type=int)
+        type = request.form['type']
+
+        # perform SQL action
+        status = database.insert_classroom(id, seat, type)
+
+        if (status is False):
+            flash("There is an error inserting the new classroom")
+            return redirect(url_for('insert_classroom'))
+        else:
+            flash("New classroom successfully inserted")
+            return redirect(url_for('index'))
+    
+    else:
+        return render_template('insert_classroom.html', page=page, session=session)
 
 ################################################################################
 # List Units page
