@@ -21,13 +21,12 @@ def database_connect():
         '''
         This is doing a couple of things in the back
         what it is doing is:
-
         connect(database='y12i2120_unikey',
             host='soit-db-pro-2.ucc.usyd.edu.au,
             password='password_from_config',
             user='y19i2120_unikey')
         '''
-        connection = pg8000.connect(database=config['DATABASE']['user'],
+        connection = pg8000.connect(database=config['DATABASE']['database'],
                                     user=config['DATABASE']['user'],
                                     password=config['DATABASE']['password'],
                                     host=config['DATABASE']['host'])
@@ -63,7 +62,7 @@ def check_login(sid, pwd):
     try:
         # Try executing the SQL and get from the database
         sql = """SELECT *
-                 FROM y22s2i2120_pjaf4595.UniDB.student
+                 FROM UniDB.student
                  WHERE studid=%s AND password=%s"""
         cur.execute(sql, (sid, pwd))
         r = cur.fetchone()              # Fetch the first row
@@ -97,7 +96,7 @@ def list_units():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uosCode, uosName, credits, year, semester
-                        FROM y22s2i2120_pjaf4595.UniDB.UoSOffering JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy USING (uosCode)
+                        FROM UniDB.UoSOffering JOIN UniDB.UnitOfStudy USING (uosCode)
                         ORDER BY uosCode, year, semester""")
         val = cur.fetchall()
     except:
@@ -137,7 +136,7 @@ def get_transcript(sid):
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uosCode, uosName, credits, year, semester, grade
-                        FROM y22s2i2120_pjaf4595.UniDB.Transcript NATURAL JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy
+                        FROM UniDB.Transcript NATURAL JOIN UniDB.UnitOfStudy
                         WHERE studId = %s;""", (sid, ))
         val = cur.fetchall()
         # print(val)  ---- FOR TROUBLESHOOTING
@@ -166,7 +165,7 @@ def list_lectures():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uoscode, uosname, semester, year, classtime, classroomid 
-                        FROM y22s2i2120_pjaf4595.UniDB.Lecture JOIN y22s2i2120_pjaf4595.UniDB.UnitOfStudy USING (uosCode)
+                        FROM UniDB.Lecture JOIN UniDB.UnitOfStudy USING (uosCode)
                         ORDER By year, semester, classroomid;""")
         val = cur.fetchall()
     except:
@@ -189,7 +188,7 @@ def search_lecs_by_time(classtime):
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT uoscode, semester, year, classroomid, classtime
-                        FROM y22s2i2120_pjaf4595.UniDB.Lecture 
+                        FROM UniDB.Lecture 
                         WHERE classtime = %s
                         ORDER By year, semester, classroomid;""", (classtime,))
         val = cur.fetchall()
@@ -215,7 +214,7 @@ def get_lecture_report():
         # Try getting all the information returned from the query
         # NOTE: column ordering is IMPORTANT
         cur.execute("""SELECT classroomid, count(classtime) 
-                        FROM y22s2i2120_pjaf4595.UniDB.Lecture 
+                        FROM UniDB.Lecture 
                         GROUP BY classroomid
                         ORDER BY classroomid;""")
         val = cur.fetchall()
@@ -235,7 +234,7 @@ def add_lecture_to_db(uoscode, semester, year, classtime, classroomid):
     
     cur = conn.cursor()
     try:
-        cur.execute("""INSERT INTO y22s2i2120_pjaf4595.UniDB.Lecture(uoscode, semester, year, classtime, classroomid) 
+        cur.execute("""INSERT INTO UniDB.Lecture(uoscode, semester, year, classtime, classroomid) 
                         VALUES(%s, %s, %s, %s, %s);""", (uoscode, semester, year, classtime, classroomid))
         conn.commit()
     except Exception as e:
@@ -256,9 +255,7 @@ if (__name__ == '__main__'):
     print("""
 This file is to interact directly with the database.
 We're using the unidb (make sure it's in your database)
-
 Try to execute some functions:
 check_login('3070799133', 'random_password')
 check_login('3070088592', 'Green')
 list_units()""")
-
