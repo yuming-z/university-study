@@ -149,12 +149,13 @@ def add_prerequisite():
         
         attributes = [uoscode, prerequoscode, enforcedsince]
         
-        try:
-            database.add_prereq_to_db(uoscode, prerequoscode, enforcedsince)
+        condition = database.add_prereq_to_db(uoscode, prerequoscode, enforcedsince)
+
+        if(condition == 0):
             page['title'] = 'Prerequisite Successfully Added'
             return render_template('addprereqsuccess.html', page=page, session=session, attributes=attributes)
 
-        except:
+        else:
             flash('Error, constraints violated or invalid attribute parameters')
             page['title'] = 'Add Prerequisite Unsuccessful'
             return render_template('addprereqfailure.html', page=page, session=session, attributes=attributes)

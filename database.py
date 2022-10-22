@@ -223,10 +223,13 @@ def add_prereq_to_db(uoscode, prerequoscode, enforcedsince):
     except Exception as e:
         print("Error inserting into database")
         conn.rollback()
+        cur.close()                     # Close the cursor
+        conn.close()  
+        return 1
         
     cur.close()                     # Close the cursor
     conn.close()                    # Close the connection to the db
-    return
+    return 0
 
 
 def count_prerequisites():
