@@ -1,0 +1,30 @@
+{% include 'top.html' %}
+<div id="content">
+    <h1 class="page-title">Prerequisites by Unit</h1>
+    <table class="pure-table">
+        <thead>
+            <tr><th>UOS Code</th><th>Number of Prerequisites</th></tr>
+        </thead>
+        <tbody>
+            <!-- TODO
+                Now it's your turn,
+                try and iterate through the results you get from the database:
+                Files you will look at:
+                    - database.py (perform the SQL query)
+                    - main.py (get the rendering working)
+                    - units.html [as an example, you'll be doing something similar ;) ]
+
+                Good luck :)
+
+            -->
+            {% for unit in count_prereq %}
+                    <tr>
+                        <td> {{unit[0]}}</td>
+                        <td> {{unit[1]}} </td>        
+                    </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
