@@ -181,6 +181,13 @@ def search_lecs_by_time(classtime):
     conn = database_connect()
     if(conn is None):
         return None
+    
+    if (classtime == ""):
+        return None
+    
+    if (len(classtime) != 5):
+        return None
+
     # Sets up the rows as a dictionary
     cur = conn.cursor()
     val = None
@@ -231,6 +238,21 @@ def add_lecture_to_db(uoscode, semester, year, classtime, classroomid):
     conn = database_connect()
     if(conn is None):
         return None
+    
+    if (len(uoscode) != 8):
+        return 1
+
+    if (len(semester) != 2):
+        return 1
+    
+    if (year < 0):
+        return 1
+    
+    if (len(classtime) != 5 and classtime != ""):
+        return 1
+    
+    if (len(classroomid) > 8):
+        return 1
     
     cur = conn.cursor()
     try:

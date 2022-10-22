@@ -204,7 +204,7 @@ def add_lecture():
         
         uoscode = request.form["uoscode"]
         semester = request.form["semester"]
-        year = request.form["year"]
+        year = request.form.get('year', type=int)
         classtime = request.form["classtime"]
         classroomid = request.form["classroomid"]
         
