@@ -83,6 +83,7 @@ Change `<port_number>` to the last 3 digit of your SID.
 host = <host>
 user = <username>
 password = <password>
+database = <database> # the data owner's database
 
 [FLASK]
 port = <port_number>
