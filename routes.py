@@ -162,7 +162,7 @@ def search_lectures_by_time():
  
         lectures = database.search_lecs_by_time(time_string)
     
-        if (lectures == ()):
+        if (lectures is None):
             flash('Error, there are no lectures with class times matching the input. Please try again')
             return render_template('lecturesbytime.html', page=page, session=session)
     
