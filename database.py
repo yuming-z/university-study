@@ -146,7 +146,7 @@ def find_classroom(seats):
     cursor = connection.cursor()
     result = None
     try:
-        cursor.execute("SELECT * FROM unidb.Classroom WHERE seats >= %s", (seats, ))
+        cursor.execute("SELECT * FROM unidb.Classroom WHERE seats > %s", (seats, ))
         connection.commit()
 
         result = cursor.fetchall()
